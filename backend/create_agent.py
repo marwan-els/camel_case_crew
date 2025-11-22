@@ -14,7 +14,7 @@ prompt = Path(__file__).with_name("sixt_agent_prompt.txt").read_text()
 
 
 response = elevenlabs.conversational_ai.agents.create(
-    name="My voice agent",
+    name="Sixt Sales Agent",
     tags=["test"], 
     conversation_config={
         "tts": {
