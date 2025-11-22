@@ -1,15 +1,13 @@
 import React from 'react';
-import { useVoiceSession } from './useVoiceSession';
-import { MicButton } from './MicButton';
-import { StatusDisplay } from './StatusDisplay';
+import { useVoiceSession } from './useVoiceSession.tsx';
+import { MicButton } from './MicButton.tsx';
+import { StatusDisplay } from './StatusDisplay.tsx';
 
-const AGENT_ID = import.meta.env.VITE_AGENT_ID as string;
+const AGENT_ID = (import.meta as any).env.VITE_AGENT_ID as string;
 
-interface VoiceInterfaceProps {
-  onComplete?: (recommendations: any[]) => void;
-}
 
-const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ onComplete }) => {
+
+const VoiceInterface: React.FC = ({}) => {
   // 1. Get Booking Context
   const bookingId = sessionStorage.getItem("bookingId") || "Unknown Booking";
   console.log("VoiceInterface Booking ID:", bookingId);
