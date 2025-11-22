@@ -3,16 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/VehicleCard";
 import { ArrowLeft } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  features: string[];
-  recommended: boolean;
-}
+import { Vehicle } from "@/components/VehicleCard";
 
 const Recommendations = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -26,32 +17,30 @@ const Recommendations = () => {
     } else {
       // Fallback to mock data if none stored
       setVehicles([
+        // Mock Vehicle Data According to Vehicle Interface
         {
-          id: "1",
-          name: "BMW 5 Series",
-          category: "Premium Sedan",
-          price: 89,
-          image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800",
-          features: ["Leather Interior", "Navigation", "Premium Sound"],
-          recommended: true,
+          brand: "Toyota",
+          model: "Corolla",
+          groupType: "Sedan",
+          image: "https://example.com/images/toyota_corolla.jpg",
+          fuelType: "Petrol",
+          transmissionType: "Automatic",
         },
         {
-          id: "2",
-          name: "Mercedes E-Class",
-          category: "Luxury Sedan",
-          price: 95,
-          image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800",
-          features: ["Massage Seats", "360° Camera", "Adaptive Cruise"],
-          recommended: true,
+          brand: "Ford",
+          model: "Focus",
+          groupType: "Hatchback",
+          image: "https://example.com/images/ford_focus.jpg",
+          fuelType: "Diesel",
+          transmissionType: "Manual",
         },
         {
-          id: "3",
-          name: "Audi A6",
-          category: "Executive Sedan",
-          price: 92,
-          image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800",
-          features: ["Virtual Cockpit", "Matrix LED", "Sport Package"],
-          recommended: false,
+          brand: "BMW",
+          model: "3 Series",
+          groupType: "Sedan",
+          image: "https://example.com/images/bmw_3series.jpg",
+          fuelType: "Hybrid",
+          transmissionType: "Automatic",
         },
       ]);
     }
@@ -85,7 +74,7 @@ const Recommendations = () => {
         {/* Vehicle Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {vehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+            <VehicleCard vehicle={vehicle} />
           ))}
         </div>
 

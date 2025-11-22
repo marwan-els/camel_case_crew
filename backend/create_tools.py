@@ -210,6 +210,61 @@ tools_to_create = [
                 }
             }
         }
+    },
+# --- Tool 11: Show Car (Client Tool) ---
+    {
+        "tool_config": {
+            "type": "client",
+            "name": "showCar",
+            "description": "Shows the details of the car to the user including its image",
+            "expects_response": True,
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "brand": { "type": "string", "description": "The brand of the car" },
+                    "model": { "type": "string", "description": "The model of the car" },
+                    "groupType": { "type": "string", "description": "The group type of the car" },
+                    "image": { "type": "string", "description": "The image url of the car" },
+                    "fuelType": { "type": "string", "description": "The fuel type of the car" },
+                    "transmissionType": { "type": "string", "description": "The transmission type of the car" },
+                    "price": { "type": "number", "description": "The price per day of the car" }
+                },
+                "required": ["brand", "model", "groupType", "image", "fuelType", "transmissionType"]
+            },
+            "dynamic_variables": {
+                "dynamic_variable_placeholders": {}
+            },
+            "assignments": [],
+            "disable_interruptions": False,
+            "tool_call_sound": None,
+            "tool_call_sound_behavior": "auto",
+            "force_pre_tool_speech": False,
+            "execution_mode": "immediate",
+            "response_timeout_secs": 1
+        }
+    },
+    # Client Tool for dimissing car display
+    {
+        "tool_config": {
+            "type": "client",
+            "name": "dismissCar",
+            "description": "Dismisses the car display from the user interface.",
+            "expects_response": False,
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            },
+            "dynamic_variables": {
+                "dynamic_variable_placeholders": {}
+            },
+            "assignments": [],
+            "disable_interruptions": False,
+            "tool_call_sound": None,
+            "tool_call_sound_behavior": "auto",
+            "force_pre_tool_speech": False,
+            "execution_mode": "immediate",
+            "response_timeout_secs": 1
+        }
     }
 ]
 

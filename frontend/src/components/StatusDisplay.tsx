@@ -1,15 +1,19 @@
 import { ConversationStatus } from '../hooks/useVoiceSession.tsx';
+import VehicleCard from './VehicleCard.tsx';
+import { Vehicle } from './VehicleCard.tsx'
 
 interface StatusDisplayProps {
   status: ConversationStatus;
   isUserSpeaking: boolean;
-  activeImage: string | null;
+  showVehicle: boolean;
+  carDetails: Vehicle | null;
 }
 
 export const StatusDisplay: React.FC<StatusDisplayProps> = ({ 
   status, 
   isUserSpeaking, 
-  activeImage 
+  showVehicle,
+  carDetails
 }) => {
   
   const getStatusLabel = () => {
@@ -23,12 +27,8 @@ export const StatusDisplay: React.FC<StatusDisplayProps> = ({
 
   return (
     <div className="text-center flex flex-col items-center gap-4">
-      {activeImage && (
-        <img
-          src={activeImage}
-          alt="Car Pitcture"
-          className="w-64 h-40 object-cover rounded-lg shadow-md animate-in fade-in zoom-in duration-300"
-        />
+      {showVehicle && (
+        <VehicleCard vehicle={carDetails} />
       )}
       
       <div>

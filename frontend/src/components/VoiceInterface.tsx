@@ -15,8 +15,9 @@ const VoiceInterface: React.FC = ({}) => {
   const { 
     status, 
     isUserSpeaking, 
-    activeImage, 
-    toggleSession 
+    showVehicle, 
+    toggleSession,
+    carDetails
   } = useVoiceSession({ 
     agentId: AGENT_ID, 
     bookingId 
@@ -34,7 +35,8 @@ const VoiceInterface: React.FC = ({}) => {
       <StatusDisplay 
         status={status}
         isUserSpeaking={isUserSpeaking}
-        activeImage={activeImage}
+        showVehicle={showVehicle}
+        carDetails={carDetails}
       />
     </div>
   );
