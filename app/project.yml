@@ -13,6 +13,9 @@ targets:
       iOS: 26.0
     sources: [SixtDigitalSalesAgent]
     scheme: {}
+    dependencies:
+      - package: ElevenLabsSDK
+        product: ElevenLabs
     settings:
       TARGETED_DEVICE_FAMILY: 1
       PRODUCT_NAME: SixtDigitalSalesAgent
