@@ -7,8 +7,50 @@ import { useToast } from "@/hooks/use-toast";
 
 const BookingId = () => {
   const [bookingId, setBookingId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const mockBookingId = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          booking_id: bookingId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to verify booking");
+      }
+
+      const data = await response.json();
+
+      // Store the ID 
+      sessionStorage.setItem("bookingId", bookingId);
+      console.log("Booking id:", bookingId);
+      toast({
+        title: "Success",
+        description: "Booking verified successfully.",
+      });
+
+      navigate("/choice");
+
+    } catch (error) {
+      console.error("Booking Error:", error);
+      toast({
+        title: "Connection Error",
+        description: "Could not connect to the server. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false); // Stop loading regardless of success/failure
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +63,8 @@ const BookingId = () => {
       });
       return;
     }
-
+    mockBookingId();
+    
     // Store booking ID and navigate to choice page
     sessionStorage.setItem("bookingId", bookingId);
     navigate("/choice");

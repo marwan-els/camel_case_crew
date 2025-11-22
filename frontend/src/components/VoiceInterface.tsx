@@ -29,6 +29,7 @@ const VoiceInterface: React.FC<VoiceInterfaceProps> = ({
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [conversationStatus, setConversationStatus] =
     useState<"idle" | "connecting" | "connected" | "error">("idle");
+    const bookingId = sessionStorage.getItem("bookingId") || "Unknown Booking";
   const startConversation = async () => {
     try {
       setConversationStatus("connecting");
@@ -42,6 +43,9 @@ const VoiceInterface: React.FC<VoiceInterfaceProps> = ({
         agentId: AGENT_ID,
         connectionType: 'webrtc', // either "webrtc" or "websocket"
         userId: '<your-end-user-id>', // optional field
+        dynamicVariables: {
+          booking_id: bookingId,
+        }
 });
 
     } catch (error) {
