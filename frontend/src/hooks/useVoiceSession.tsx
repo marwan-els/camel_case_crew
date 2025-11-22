@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useConversation } from '@elevenlabs/react';
 import { useToast } from '@/hooks/use-toast';
+import VehicleCard from '@/components/VehicleCard';
+import { set } from 'date-fns';
+import { Vehicle } from '@/components/VehicleCard';
 
 // Types
 export type ConversationStatus = 'idle' | 'connecting' | 'connected' | 'error';
@@ -16,18 +19,25 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
   // State
   const [status, setStatus] = useState<ConversationStatus>('idle');
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
-  const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [showVehicle, setShowVehicle] = useState(false);
+  const [carDetails, setCarDetails] = useState<Vehicle | null>(null);
 
   // ElevenLabs Conversation Hook
   const conversation = useConversation({
     clientTools: {
       renderImage: async ({ image_url }: { image_url: string }) => {
-        setActiveImage(image_url);
+        setShowVehicle(true);
         return "Image Rendered Successfully";
       },
-      hideImage: async () => {
-        setActiveImage(null);
+      dismissCar: async () => {
+        setShowVehicle(false);
         return "Image Hidden Successfully";
+      },
+      // Function for displaying car by spreading the vehicle params
+      showCar : async (vehicle: Vehicle) => {
+        setShowVehicle(true);
+        setCarDetails(vehicle);
+        return "Car Details Displayed Successfully";
       }
     },
     onConnect: () => {
@@ -36,7 +46,7 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
     onDisconnect: () => {
       setStatus('idle');
       setIsUserSpeaking(false);
-      setActiveImage(null);
+      setShowVehicle(false);
     },
     onError: (error) => {
       console.error('Conversation error:', error);
@@ -92,7 +102,8 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
   return {
     status,
     isUserSpeaking,
-    activeImage,
-    toggleSession
+    showVehicle,
+    toggleSession,
+    carDetails
   };
 };
