@@ -1,0 +1,40 @@
+name: SixtDigitalSalesAgent
+settings:
+  DEVELOPMENT_TEAM: T7PP2KY2B6
+packages:
+  ElevenLabsSDK:
+    url: https://github.com/elevenlabs/elevenlabs-swift-sdk.git
+    from: 2.0.0
+targets:
+  SixtDigitalSalesAgent:
+    type: application
+    platform: iOS
+    deploymentTarget:
+      iOS: 26.0
+    sources: [SixtDigitalSalesAgent]
+    scheme: {}
+    settings:
+      TARGETED_DEVICE_FAMILY: 1
+      PRODUCT_NAME: SixtDigitalSalesAgent
+      INFOPLIST_FILE: SixtDigitalSalesAgent/Supporting/Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: de.tum.cit.ase.ios25.SixtDigitalSalesAgent
+      ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: 1
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+postCompileScripts:
+  - script: |-
+      if [[ "${CONFIGURATION}" = Release ]]; then
+        # Do not extra lint in CI
+        exit 0
+      fi
+
+      if [[ "$(uname -m)" == arm64 ]]; then
+          export PATH="/opt/homebrew/bin:$PATH"
+      fi
+
+      if which swiftlint > /dev/null; then
+          swiftlint
+      else
+          echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+      fi
+    name: SwiftLint
+    basedOnDependencyAnalysis: false
