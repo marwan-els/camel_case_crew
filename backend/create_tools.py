@@ -9,6 +9,7 @@ load_dotenv()
 # 1. SETUP
 API_KEY = os.getenv("ELEVENLABS_API_KEY")
 BASE_URL = "https://api.elevenlabs.io/v1/convai/tools"
+AGENT_ID = os.getenv("ELEVENLABS_AGENT_ID")
 
 headers = {
     "xi-api-key": API_KEY,
@@ -16,7 +17,6 @@ headers = {
 }
 
 tools_to_create = [
-    # --- Tool 1: Get Booking ---
     # --- Tool 1: Get Booking ---
     {
         "tool_config": {
@@ -232,3 +232,40 @@ for tool in tools_to_create:
         print(f"❌ Error connecting for {tool_name}: {str(e)}")
 
 print("--- Done ---")
+
+
+# Retrieve all created tools to get their IDs
+list_response = requests.get(BASE_URL, headers=headers)
+if list_response.status_code == 200:
+    all_tools = list_response.json().get('tools', [])
+else:
+    print(f"❌ Failed to retrieve tools - Status: {list_response.status_code}")
+    all_tools = []
+
+
+# # Update agent to use created tools
+update_url = f"https://api.elevenlabs.io/v1/convai/agents/{AGENT_ID}"
+update_payload = {
+    "tool_ids": [tool['tool_config']['name'] for tool in all_tools]
+}
+update_response = requests.patch(update_url, headers=headers, json=update_payload)
+if update_response.status_code == 200:
+    print(f"✅ Agent updated with tools successfully.")
+else:
+    print(f"❌ Failed to update agent - Status: {update_response.status_code}")
+    print(update_response.text)
+
+
+# Get agent and print its tools
+get_agent_response = requests.get(update_url, headers=headers)
+if get_agent_response.status_code == 200:
+    agent_info = get_agent_response.json()
+    tools_list = agent_info['conversation_config']['agent']['prompt']['tools']
+    tool_names = [tool['name'] for tool in tools_list]
+    print(f"Agent Tools: {tool_names}")
+    print(f"✅ Retrieved agent info successfully.")
+else:
+    print(f"❌ Failed to retrieve agent info - Status: {get_agent_response.status_code}")
+    print(get_agent_response.text)
+
+
