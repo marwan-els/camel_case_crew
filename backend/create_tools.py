@@ -246,8 +246,15 @@ else:
 # # Update agent to use created tools
 update_url = f"https://api.elevenlabs.io/v1/convai/agents/{AGENT_ID}"
 update_payload = {
-    "tool_ids": [tool['tool_config']['name'] for tool in all_tools]
+    "conversation_config": {
+        "agent": {
+            "prompt": {
+                "tool_ids": [tool['id'] for tool in all_tools]
+            }
+        }
+    }
 }
+print("Updating agent with tools:", update_payload)
 update_response = requests.patch(update_url, headers=headers, json=update_payload)
 if update_response.status_code == 200:
     print(f"✅ Agent updated with tools successfully.")
