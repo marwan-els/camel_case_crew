@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import VoiceInterface from "@/components/VoiceInterface";
 
 const AiAgent = () => {
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const navigate = useNavigate();
 
   const handleComplete = (recommendations: any[]) => {
@@ -27,16 +26,8 @@ const AiAgent = () => {
 
       {/* Voice Interface */}
       <VoiceInterface 
-        onSpeakingChange={setIsSpeaking}
         onComplete={handleComplete}
       />
-
-      {/* Status Indicator */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          {isSpeaking ? "AI is speaking..." : "Listening..."}
-        </p>
-      </div>
     </div>
   );
 };
