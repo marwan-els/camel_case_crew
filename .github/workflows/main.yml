@@ -1,0 +1,40 @@
+# This workflow ensures the Lovable React/Vite application can be installed, linted, tested, and built successfully.
+
+name: CI - Build and Test
+
+# Run on every push to the main branch and for all pull requests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    name: Build, Lint, and Test
+    runs-on: ubuntu-latest
+    
+
+    steps:
+    - name: 1. Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 2. Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Use a stable Node.js version, matching typical development environment
+        cache: 'npm'
+
+    - name: 3. Install dependencies
+      # The project uses 'npm i' as per the project info
+      run: npm install 
+      
+    - name: 4. Run Lint Check
+      # Assuming a standard 'lint' script exists in package.json (e.g., 'eslint . --ext js,jsx,ts,tsx')
+      run: npm run lint
+      # The build will fail if linting errors are found.
+
+    - name: 5. Build the application for production
+      # This step validates that all TypeScript compilation and bundling succeeds.
+      run: npm run build
+      
