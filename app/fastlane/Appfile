@@ -1,0 +1,6 @@
+# For more information about the Appfile, see:
+# https://docs.fastlane.tools/advanced/#appfile
+
+app_identifier "de.tum.cit.ase.ios25.SixtDigitalSalesAgent"
+
+team_id "T7PP2KY2B6"

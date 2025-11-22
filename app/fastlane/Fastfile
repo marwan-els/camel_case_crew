@@ -1,0 +1,156 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+
+# TODO: change project name
+project_name = "SixtDigitalSalesAgent"
+
+desc "[CI] Default build configuration"
+lane :build do
+  ##########################################
+  # Environment Setup
+  ##########################################
+
+  info_plist_path = "#{project_name}/Supporting/Info.plist"
+  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+  set_info_plist_value(
+    path: info_plist_path,
+    key: "ITSAppUsesNonExemptEncryption",
+    value: "NO"
+  )
+
+  set_info_plist_value(
+    path: info_plist_path,
+    key: "CFBundleVersion",
+    value: ENV["CI_PIPELINE_IID"]
+  )
+
+   ##########################################
+  # Code Signing and Provisioning Profile
+  ##########################################
+
+  api_key = fetch_api_key
+
+  match(
+    username: "fastlane_match", # This is just a label, doesn't affect auth
+    app_identifier: app_identifier,
+    
+    # 👇 CHANGE 1: Must be 'appstore' for TestFlight. 'adhoc' will be rejected.
+    type: "appstore", 
+    
+    api_key: api_key,
+    git_branch: "main",
+    clone_branch_directly: true,
+    
+    # 👇 CHANGE 2: Update this URL to your NEW private GitHub Certificates Repo
+    git_url: "https://github.com/YOUR_ORG/my-app-certificates.git",
+    
+    # 👇 CHANGE 3: Use the standard GitHub Auth variable we set in ios.yml
+    git_basic_authorization: ENV['MATCH_GIT_BASIC_AUTHORIZATION'],
+    
+    verbose: true,
+    readonly: is_ci, # Readonly on CI, Read/Write on local machine
+    keychain_name: "fastlane_tmp_keychain",
+    keychain_password: ""
+  )
+
+  ##########################################
+  # Platform Build
+  ##########################################
+
+  build_platform_app(platform: "iOS")
+ # build_platform_app(platform: "visionOS")
+end
+
+desc "[CI] Upload a previous build app to TestFlight"
+lane :release do
+  api_key = api_key
+
+  release_platform(platform: "iOS", api_key: api_key)
+  release_platform(platform: "visionOS", api_key: api_key)
+end
+
+desc "[CI] Build the app for a specific platform"
+lane :build_platform_app do |options|
+  platform = options[:platform] || "iOS"
+
+  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+
+  if platform == "iOS"
+    update_code_signing_settings(
+      path: "./#{project_name}.xcodeproj",
+      use_automatic_signing: false,
+      code_sign_identity: "iPhone Distribution",
+      sdk: "iphoneos*",
+      profile_name: "match AppStore " + app_identifier,
+      bundle_identifier: app_identifier,
+      team_id: team_id
+    )
+  elsif platform == "visionOS"
+    update_code_signing_settings(
+      path: "./#{project_name}.xcodeproj",
+      use_automatic_signing: false,
+      code_sign_identity: "Vision Pro Distribution",
+      sdk: "visionos*",
+      profile_name: "match AppStore " + app_identifier,
+      bundle_identifier: app_identifier,
+      team_id: team_id
+    )
+  end
+
+  build_app(
+    clean: true, # Do a clean build each time
+    output_name: "App.ipa", # The name of the output artifact
+    configuration: "Release", # Build with release configuration
+    cloned_source_packages_path: ".SwiftPackages", # Custom path for cloning source packages to
+    derived_data_path: ".DerivedData", # Custom derived data path
+    output_directory: "./build/#{platform}", # Directory where the output artifacts are generated
+    scheme: "#{project_name}_#{platform}", # Target Schema
+    xcodebuild_formatter: '',
+    export_options: {
+      provisioningProfiles: {
+        app_identifier => "match AppStore " + app_identifier
+      }
+    }
+  )
+end
+
+desc "[CI] Upload a previous build app to TestFlight"
+lane :release_platform do |options|
+  platform = options[:platform] || "iOS"
+  api_key = options[:api_key] || fetch_api_key
+  upload_to_testflight(
+    ipa: "#{Dir.pwd}/../build/#{platform}/App.ipa",
+    api_key: api_key,
+    skip_waiting_for_build_processing: true
+  )
+
+end
+
+desc "[CI] Generate a fresh token to authenticate on the app store connect api"
+lane :fetch_api_key do
+  app_store_connect_api_key(
+    duration: 300, # This Token is valid for 300s
+    key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+    issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+    key_content: ENV["APP_STORE_CONNECT_API_KEY_PASSWORD"],
+    is_key_content_base64: true
+  )
+end
+
