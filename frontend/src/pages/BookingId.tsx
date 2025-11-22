@@ -4,13 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-
 const BookingId = () => {
   const [bookingId, setBookingId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
   const mockBookingId = async () => {
     try {
       setIsLoading(true);
@@ -18,43 +16,36 @@ const BookingId = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          booking_id: bookingId,
-        }),
+        }
       });
-
       if (!response.ok) {
         throw new Error("Failed to verify booking");
       }
-
       const data = await response.json();
-
-      // Store the ID 
-      sessionStorage.setItem("bookingId", bookingId);
-      console.log("Booking id:", bookingId);
+      console.log("Booking Response Data:", data);
+      const verifiedId = data.id;
+      console.log("Verified Booking ID:", verifiedId);
+      // Store the verified ID
+      sessionStorage.setItem("bookingId", verifiedId);
+      console.log("Booking id:", verifiedId);
       toast({
         title: "Success",
         description: "Booking verified successfully.",
       });
-
       navigate("/choice");
-
     } catch (error) {
       console.error("Booking Error:", error);
       toast({
-        title: "Connection Error",
-        description: "Could not connect to the server. Please try again.",
+        title: "Connection or Verification Error",
+        description: "We couldn't verify your booking. Please check your ID and try again.",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false); // Stop loading regardless of success/failure
+      setIsLoading(false);
     }
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!bookingId.trim()) {
       toast({
         title: "Booking ID Required",
@@ -63,13 +54,8 @@ const BookingId = () => {
       });
       return;
     }
-    mockBookingId();
-    
-    // Store booking ID and navigate to choice page
-    sessionStorage.setItem("bookingId", bookingId);
-    navigate("/choice");
+    await mockBookingId();
   };
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8 shadow-lg">
@@ -80,7 +66,6 @@ const BookingId = () => {
             Premium Mobility Service
           </p>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="bookingId" className="text-sm font-medium text-foreground">
@@ -98,17 +83,16 @@ const BookingId = () => {
               You can find your booking ID in your confirmation email
             </p>
           </div>
-
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary-hover transition-colors"
+            disabled={isLoading}
           >
-            Continue
+            {isLoading ? "Verifying..." : "Continue"}
           </Button>
         </form>
       </Card>
     </div>
   );
 };
-
 export default BookingId;
