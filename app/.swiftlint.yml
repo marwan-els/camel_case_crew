@@ -1,0 +1,32 @@
+# Turn off some rules completely
+disabled_rules:
+  - trailing_whitespace
+  - force_try
+
+# Explicitly turn on some stricter rules
+opt_in_rules:
+  - force_unwrapping
+  - empty_count
+
+# Tell SwiftLint which folders to scan
+included:
+  - SixtDigitalSalesAgent
+
+# Paths to ignore (if you have them)
+excluded:
+  - Pods
+  - Generated
+  - Scripts
+
+# Configure specific rules
+line_length:
+  warning: 120
+  error: 180
+
+identifier_name:
+  min_length:
+    warning: 3
+  excluded:
+    - id
+    - x
+    - y

@@ -20,21 +20,21 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: de.tum.cit.ase.ios25.SixtDigitalSalesAgent
       ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: 1
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-postCompileScripts:
-  - script: |-
-      if [[ "${CONFIGURATION}" = Release ]]; then
-        # Do not extra lint in CI
-        exit 0
-      fi
+    postCompileScripts:
+      - script: |-
+          if [[ "${CONFIGURATION}" = Release ]]; then
+            # Do not extra lint in CI
+            exit 0
+          fi
 
-      if [[ "$(uname -m)" == arm64 ]]; then
-          export PATH="/opt/homebrew/bin:$PATH"
-      fi
+          if [[ "$(uname -m)" == arm64 ]]; then
+              export PATH="/opt/homebrew/bin:$PATH"
+          fi
 
-      if which swiftlint > /dev/null; then
-          swiftlint
-      else
-          echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
-      fi
-    name: SwiftLint
-    basedOnDependencyAnalysis: false
+          if which swiftlint > /dev/null; then
+              swiftlint
+          else
+              echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+          fi
+        name: SwiftLint
+        basedOnDependencyAnalysis: false
