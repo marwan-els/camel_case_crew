@@ -23,7 +23,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20' # Use a stable Node.js version, matching typical development environment
-        cache: 'npm'
 
     - name: 3. Install dependencies
       # The project uses 'npm i' as per the project info
