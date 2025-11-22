@@ -5,12 +5,6 @@ import VoiceInterface from "@/components/VoiceInterface";
 const AiAgent = () => {
   const navigate = useNavigate();
 
-  const handleComplete = (recommendations: any[]) => {
-    // Store recommendations and navigate to results
-    sessionStorage.setItem("recommendations", JSON.stringify(recommendations));
-    navigate("/recommendations");
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       {/* Header */}
@@ -25,9 +19,7 @@ const AiAgent = () => {
       </div>
 
       {/* Voice Interface */}
-      <VoiceInterface 
-        onComplete={handleComplete}
-      />
+      <VoiceInterface />
     </div>
   );
 };

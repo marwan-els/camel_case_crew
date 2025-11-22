@@ -27,6 +27,8 @@ dist-ssr
 *.sln
 *.sw?
 
+thought-process.md
+
 # ios build
 *.moved-aside
 xcuserdata/
