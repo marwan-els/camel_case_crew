@@ -25,6 +25,7 @@ const Recommendations = () => {
           image: "https://example.com/images/toyota_corolla.jpg",
           fuelType: "Petrol",
           transmissionType: "Automatic",
+          price: 45,
         },
         {
           brand: "Ford",
@@ -33,6 +34,7 @@ const Recommendations = () => {
           image: "https://example.com/images/ford_focus.jpg",
           fuelType: "Diesel",
           transmissionType: "Manual",
+          price: 40,
         },
         {
           brand: "BMW",
@@ -41,6 +43,7 @@ const Recommendations = () => {
           image: "https://example.com/images/bmw_3series.jpg",
           fuelType: "Hybrid",
           transmissionType: "Automatic",
+          price: 70,
         },
       ]);
     }

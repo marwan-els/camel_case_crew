@@ -8,8 +8,8 @@ export interface Vehicle {
   model: string;
   groupType: string;
   image: string;
-  fuelType: string;
-  transmissionType: string;
+  fuelType?: string;
+  transmissionType?: string;
   price: number;
 }
 
