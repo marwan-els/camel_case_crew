@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Mic, MicOff, Loader2 } from 'lucide-react';
-import { ConversationStatus } from './useVoiceSession.tsx';
+import { ConversationStatus } from '../hooks/useVoiceSession.tsx';
 import { cn } from '@/lib/utils'; // Assuming you have a class merger utility
 
 interface MicButtonProps {

@@ -1,4 +1,4 @@
-import { ConversationStatus } from './useVoiceSession.tsx';
+import { ConversationStatus } from '../hooks/useVoiceSession.tsx';
 
 interface StatusDisplayProps {
   status: ConversationStatus;
