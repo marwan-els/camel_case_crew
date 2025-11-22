@@ -1,5 +1,5 @@
 import React from 'react';
-import { useVoiceSession } from './useVoiceSession.tsx';
+import { useVoiceSession } from '../hooks/useVoiceSession.tsx';
 import { MicButton } from './MicButton.tsx';
 import { StatusDisplay } from './StatusDisplay.tsx';
 
