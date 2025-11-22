@@ -1,0 +1,62 @@
+name: 📱 iOS Build & Release
+
+on:
+  # 1. Automatic: Run tests/build on every push (but NO release)
+  push:
+    branches: [ main ]
+    paths: ['app/**']
+  
+  # 2. Manual: Show a "Run Workflow" button in GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release to TestFlight?'
+        required: true
+        default: 'yes'
+        type: choice
+        options:
+        - 'yes'
+        - 'dry-run'
+
+jobs:
+  build_ios:
+    # This runs on push AND manual trigger
+    name: Build & Test
+    runs-on: macos-15
+    defaults: { run: { working-directory: app } }
+    steps:
+       # ... (Same steps as before) ...
+       - run: bundle exec fastlane build
+
+  release_ios:
+    # 👇 ONLY run if this was triggered manually by the button
+    if: github.event_name == 'workflow_dispatch' && inputs.release_type == 'yes'
+    
+    needs: build_ios
+    name: Release to TestFlight
+    runs-on: macos-15
+    defaults: { run: { working-directory: app } }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: app
+
+      - name: Install XcodeGen & Generate
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Upload to TestFlight
+        run: bundle exec fastlane release
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
