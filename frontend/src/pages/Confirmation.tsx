@@ -6,14 +6,16 @@ import {
   Calendar, 
   Shield, 
   Car, 
-  Home, 
   Printer, 
   Fuel, 
   Users, 
-  Briefcase 
+  Briefcase,
+  Lock,
+  Unlock,
+  Loader2
 } from "lucide-react";
+import { toast } from "sonner"; 
 
-// --- Types based on your JSON Payload ---
 interface VehicleAttribute {
   key: string;
   title: string;
@@ -65,16 +67,17 @@ interface BookingData {
 const Confirmation = () => {
   const [booking, setBooking] = useState<BookingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [unlockSuccess, setUnlockSuccess] = useState(false);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooking = async () => {
       const bookingId = sessionStorage.getItem("bookingId");
-      
-      // If testing without session, you might want to hardcode an ID here or handle redirect
       if (!bookingId) {
         console.error("No booking ID found");
-        // navigate("/"); // Optional: Redirect to home if no ID
         setIsLoading(false); 
         return;
       }
@@ -82,9 +85,7 @@ const Confirmation = () => {
       try {
         setIsLoading(true);
         const response = await fetch("/api/booking/" + bookingId);
-        
         if (!response.ok) throw new Error("Failed to fetch");
-        
         const data = await response.json();
         setBooking(data);
       } catch (error) {
@@ -95,15 +96,39 @@ const Confirmation = () => {
     };
 
     fetchBooking();
-  }, [navigate]);
+  }, []);
+
+  const handleUnlockVehicle = async () => {
+    if (!booking) return;
+
+    setIsUnlocking(true);
+    try {
+      const response = await fetch("/api/car/unlock", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // It is good practice to send the booking ID, though your API might rely on cookies
+        body: JSON.stringify({ bookingId: booking.id }) 
+      });
+
+      if (!response.ok) throw new Error("Failed to unlock vehicle");
+
+      setUnlockSuccess(true);
+      toast.success("Vehicle unlocked successfully!"); 
+      
+    } catch (error) {
+      console.error("Unlock failed:", error);
+      toast.error("Failed to unlock vehicle. Please try again.");
+    } finally {
+      setIsUnlocking(false);
+    }
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="h-12 w-12 bg-gray-200 rounded-full mb-4"></div>
-          <div className="h-4 w-48 bg-gray-200 rounded"></div>
-        </div>
+        <Loader2 className="animate-spin h-10 w-10 text-primary" />
       </div>
     );
   }
@@ -133,7 +158,7 @@ const Confirmation = () => {
             Booking Confirmed!
           </h1>
           <p className="text-lg text-gray-600">
-            Thank you for your reservation. A confirmation email has been sent to you.
+            Your vehicle is ready. Use the digital key below to access your car.
           </p>
           <div className="inline-block bg-white px-6 py-3 rounded-lg border border-gray-200 shadow-sm">
             <span className="text-gray-500 text-sm uppercase tracking-wider">Booking Reference</span>
@@ -143,8 +168,10 @@ const Confirmation = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* LEFT COLUMN: Vehicle Details (Takes up 2 columns on large screens) */}
+          {/* LEFT COLUMN: Vehicle & Protection Details */}
           <div className="lg:col-span-2 space-y-6">
+            
+            {/* Vehicle Card */}
             <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
               <div className="p-6 border-b bg-gray-50 flex justify-between items-center">
                 <h2 className="font-semibold text-lg flex items-center gap-2">
@@ -224,12 +251,58 @@ const Confirmation = () => {
             )}
           </div>
 
-          {/* RIGHT COLUMN: Summary & Actions */}
+          {/* RIGHT COLUMN: Actions & Unlock */}
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border shadow-sm p-6">
-              <h2 className="font-semibold text-lg mb-4">Booking Summary</h2>
+            
+            {/* Primary Action Card */}
+            <div className="bg-white rounded-xl border shadow-md p-6 ring-1 ring-black/5">
+              <h2 className="font-semibold text-lg mb-4">Digital Key</h2>
               
               <div className="space-y-4">
+                <p className="text-sm text-gray-500">
+                  Stand near the vehicle ({vehicle.brand} {vehicle.model}) to unlock.
+                </p>
+                
+                <Button 
+                  onClick={handleUnlockVehicle} 
+                  disabled={isUnlocking || unlockSuccess}
+                  className={`w-full h-14 text-lg transition-all duration-500 ${
+                    unlockSuccess 
+                      ? "bg-green-600 hover:bg-green-700" 
+                      : "bg-primary hover:bg-primary/90"
+                  }`}
+                >
+                  {isUnlocking ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" /> 
+                      Unlocking...
+                    </>
+                  ) : unlockSuccess ? (
+                    <>
+                      <Unlock className="mr-2 h-5 w-5" /> 
+                      Unlocked
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="mr-2 h-5 w-5" /> 
+                      Unlock Vehicle
+                    </>
+                  )}
+                </Button>
+
+                {unlockSuccess && (
+                  <div className="bg-green-50 text-green-800 text-xs p-3 rounded-md text-center animate-in fade-in slide-in-from-top-2">
+                    Vehicle is ready to drive!
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Summary Card */}
+            <div className="bg-white rounded-xl border shadow-sm p-6">
+              <h2 className="font-semibold text-lg mb-4">Booking Summary</h2>
+              <div className="space-y-4">
+                 {/* Summary Details */}
                 <div className="flex items-start gap-3 pb-4 border-b">
                   <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
                   <div>
@@ -251,20 +324,16 @@ const Confirmation = () => {
                      <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded capitalize">
                        {booking.status}
                      </span>
-                   </div>
+                  </div>
                 </div>
+              </div>
+              <div className="mt-4 pt-2">
+                <Button variant="outline" onClick={() => window.print()} className="w-full">
+                  <Printer className="mr-2 h-4 w-4" /> Print Confirmation
+                </Button>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3">
-              <Button onClick={() => navigate("/")} className="w-full h-12 text-lg">
-                <Home className="mr-2 h-4 w-4" /> Return to Home
-              </Button>
-              <Button variant="outline" onClick={() => window.print()} className="w-full">
-                <Printer className="mr-2 h-4 w-4" /> Print Confirmation
-              </Button>
-            </div>
           </div>
 
         </div>
@@ -273,7 +342,7 @@ const Confirmation = () => {
   );
 };
 
-// Helper Component for vehicle badges
+// Helper Component
 const AttributeBadge = ({ icon, label }: { icon: React.ReactNode, label: string }) => (
   <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-md text-sm text-gray-700">
     {icon}
