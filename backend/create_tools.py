@@ -270,8 +270,8 @@ tools_to_create = [
     {
         "tool_config": {    
             "type": "client",
-            "name": "completeBooking",
-            "description": "Only invoked after the complete booking tool has been called. Informs the user that the booking has been finalized successfully. ",
+            "name": "redirect_to_confirmation_page",
+            "description": "Only invoked after the complete booking tool has been called. Redirects the user to the confirmation page.",
             "expects_response": False,
             "parameters": {
                 "type": "object",
@@ -281,11 +281,11 @@ tools_to_create = [
                 "dynamic_variable_placeholders": {}
             },
             "assignments": [],
-            "disable_interruptions": False,
+            "disable_interruptions": True,
             "tool_call_sound": None,
             "tool_call_sound_behavior": "auto",
-            "force_pre_tool_speech": False,
-            "execution_mode": "immediate",
+            "force_pre_tool_speech": True,
+            "execution_mode": "post_tool_speech",
             "response_timeout_secs": 1
         }
     },

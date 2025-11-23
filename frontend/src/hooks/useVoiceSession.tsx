@@ -29,10 +29,6 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
   // ElevenLabs Conversation Hook
   const conversation = useConversation({
     clientTools: {
-      renderImage: async ({ image_url }: { image_url: string }) => {
-        setShowVehicle(true);
-        return "Image Rendered Successfully";
-      },
       dismissCar: async () => {
         setShowVehicle(false);
         return "Image Hidden Successfully";
@@ -42,10 +38,10 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
         setCarDetails(vehicle);
         return "Car Details Displayed Successfully";
       },
-      completeBooking: async () => {
-        // TODO:
+      redirect_to_confirmation_page: async () => {
         navigate("/confirmation");
-    },
+    }
+  },
     onConnect: () => {
       setStatus('connected');
     },
@@ -63,7 +59,7 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
         description: typeof error === 'string' ? error : "Failed to connect to agent.",
         variant: "destructive",
       });
-    }}
+    },
   });
 
   // Actions
