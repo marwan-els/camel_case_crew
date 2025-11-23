@@ -22,7 +22,7 @@ response = elevenlabs.conversational_ai.agents.create(
             "model_id": "eleven_flash_v2"
         },
         "agent": {
-            "first_message": "Hi, this is Rachel from SixT. How can I help you today?",
+            "first_message": "Hi, this is Rachel from Sixt. How can I help you today?",
             "prompt": {
                 "prompt": prompt,
             }
