@@ -265,7 +265,30 @@ tools_to_create = [
             "execution_mode": "immediate",
             "response_timeout_secs": 1
         }
-    }
+    },
+    # Client Tool Finalize Booking
+    {
+        "tool_config": {    
+            "type": "client",
+            "name": "redirect_to_confirmation_page",
+            "description": "Only invoked after the complete booking tool has been called. Redirects the user to the confirmation page.",
+            "expects_response": False,
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            },
+            "dynamic_variables": {
+                "dynamic_variable_placeholders": {}
+            },
+            "assignments": [],
+            "disable_interruptions": True,
+            "tool_call_sound": None,
+            "tool_call_sound_behavior": "auto",
+            "force_pre_tool_speech": True,
+            "execution_mode": "post_tool_speech",
+            "response_timeout_secs": 1
+        }
+    },
 ]
 
 # 3. EXECUTION LOOP

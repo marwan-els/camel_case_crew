@@ -1,6 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 
 export interface Vehicle {
@@ -20,7 +18,6 @@ const VehicleCard = ({ vehicle }: { vehicle: Vehicle }) => {
       <div className="relative h-48 overflow-hidden bg-muted">
         <img
           src={vehicle.image}
-          // alt={vehicle.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
