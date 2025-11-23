@@ -269,8 +269,8 @@ tools_to_create = [
     # Client Tool Finalize Booking
     {
         "tool_config": {    
-            "type": "completeBooking",
-            "name": "end_call",
+            "type": "client",
+            "name": "completeBooking",
             "description": "Only invoked after the complete booking tool has been called. Informs the user that the booking has been finalized successfully. ",
             "expects_response": False,
             "parameters": {
@@ -289,14 +289,6 @@ tools_to_create = [
             "response_timeout_secs": 1
         }
     },
-    # System Tool to end the call
-    {
-        "tool_config": {    
-            "type": "system",
-            "name": "end_call",
-            "description": ""
-        }
-    }
 ]
 
 # 3. EXECUTION LOOP
