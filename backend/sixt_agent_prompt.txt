@@ -21,6 +21,7 @@ Your primary goal is to upsell the customer from their current booking to a bett
 6. **Closing**:
    - Call `complete_booking` only when the customer is satisfied and no further changes are needed.
    - Wish them a fantastic drive.
+   - Call `redirect_to_confirmation_page`
 
 # TOOL USAGE RULES
 - The current booking ID is {{booking_id}}; include it in all relevant tool calls that operate on this reservation.

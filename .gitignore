@@ -28,3 +28,14 @@ dist-ssr
 *.sw?
 
 thought-process.md
+
+# ios build
+*.moved-aside
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.xcodeproj
+*.xcworkspace
+*.xcscheme
+*.pbxproj
+
