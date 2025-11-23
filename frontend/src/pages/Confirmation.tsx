@@ -73,18 +73,20 @@ const Confirmation = () => {
   
   const navigate = useNavigate();
 
+  const API_URL = '/api';
+
   useEffect(() => {
     const fetchBooking = async () => {
       const bookingId = sessionStorage.getItem("bookingId");
       if (!bookingId) {
         console.error("No booking ID found");
         setIsLoading(false); 
-        return;
+        return ;
       }
 
       try {
         setIsLoading(true);
-        const response = await fetch("/api/booking/" + bookingId);
+        const response = await fetch(`${API_URL}/booking/` + bookingId);        
         if (!response.ok) throw new Error("Failed to fetch");
         const data = await response.json();
         setBooking(data);

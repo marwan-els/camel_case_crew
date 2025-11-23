@@ -9,16 +9,21 @@ const BookingId = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const API_URL = '/api';
+
   const mockBookingId = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/booking", {
+      console.log("Proudction Url: ", `${API_URL}`)
+      const response = await fetch(`${API_URL}/booking`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         }
       });
       if (!response.ok) {
+        console.log(response)
         throw new Error("Failed to verify booking");
       }
       const data = await response.json();
