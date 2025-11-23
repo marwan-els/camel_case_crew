@@ -241,6 +241,9 @@ This project is private and proprietary.
 ## 👥 Team
 
 Developed by the Camel Case Crew team.
+- [Marwan Elsayed](https://github.com/marwan-els)
+- [Youssef Eltoukhi](https://github.com/toukhi)
+- [Nayer Kotry](https://github.com/nayer-kotry)
 
 ## 🔗 Additional Resources
 
