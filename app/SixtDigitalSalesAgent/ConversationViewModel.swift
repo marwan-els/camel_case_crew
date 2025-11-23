@@ -20,9 +20,9 @@ class ConversationViewModel: ObservableObject {
     func startConversation(bookingId: String) async {
         do {
             conversation = try await ElevenLabs.startConversation(
-                agentId: "agent_2801kaq1rv9tfdf83v0bk7dxdqpd",
+                agentId: "agent_7601kaq3pkqzexxbnpbg7fcgkq4p",
                 config: ConversationConfig(
-                    dynamicVariables: ["bookingId": bookingId]
+                    dynamicVariables: ["booking_id": bookingId]
                 )
             )
             setupObservers()
