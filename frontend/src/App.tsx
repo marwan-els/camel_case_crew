@@ -7,7 +7,7 @@ import BookingId from "./pages/BookingId";
 import Choice from "./pages/Choice";
 import AiAgent from "./pages/AiAgent";
 import ManualInput from "./pages/ManualInput";
-import Recommendations from "./pages/Recommendations";
+import Confirmation from "./pages/Confirmation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,8 +23,7 @@ const App = () => (
           <Route path="/choice" element={<Choice />} />
           <Route path="/ai-agent" element={<AiAgent />} />
           <Route path="/manual-input" element={<ManualInput />} />
-          <Route path="/recommendations" element={<Recommendations />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/confirmation" element={<Confirmation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
