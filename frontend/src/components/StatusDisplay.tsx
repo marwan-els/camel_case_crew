@@ -26,11 +26,7 @@ export const StatusDisplay: React.FC<StatusDisplayProps> = ({
   };
 
   return (
-    <div className="text-center flex flex-col items-center gap-4">
-      {showVehicle && (
-        <VehicleCard vehicle={carDetails} />
-      )}
-      
+    <div className="text-center flex flex-col items-center gap-4">      
       <div>
         <p className="text-lg font-semibold text-foreground">
             {getStatusLabel()}
@@ -41,6 +37,9 @@ export const StatusDisplay: React.FC<StatusDisplayProps> = ({
             : "Click again to end the conversation"}
         </p>
       </div>
+      {showVehicle && (
+        <VehicleCard vehicle={carDetails} />
+      )}
     </div>
   );
 };

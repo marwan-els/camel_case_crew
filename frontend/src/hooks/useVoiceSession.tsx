@@ -4,6 +4,8 @@ import { useToast } from '@/hooks/use-toast';
 import VehicleCard from '@/components/VehicleCard';
 import { set } from 'date-fns';
 import { Vehicle } from '@/components/VehicleCard';
+import { useNavigate } from "react-router-dom";
+
 
 // Types
 export type ConversationStatus = 'idle' | 'connecting' | 'connected' | 'error';
@@ -21,25 +23,25 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [showVehicle, setShowVehicle] = useState(false);
   const [carDetails, setCarDetails] = useState<Vehicle | null>(null);
+  const navigate = useNavigate();
+  
 
   // ElevenLabs Conversation Hook
   const conversation = useConversation({
     clientTools: {
-      renderImage: async ({ image_url }: { image_url: string }) => {
-        setShowVehicle(true);
-        return "Image Rendered Successfully";
-      },
       dismissCar: async () => {
         setShowVehicle(false);
         return "Image Hidden Successfully";
       },
-      // Function for displaying car by spreading the vehicle params
       showCar : async (vehicle: Vehicle) => {
         setShowVehicle(true);
         setCarDetails(vehicle);
         return "Car Details Displayed Successfully";
-      }
-    },
+      },
+      redirect_to_confirmation_page: async () => {
+        navigate("/confirmation");
+    }
+  },
     onConnect: () => {
       setStatus('connected');
     },
@@ -47,6 +49,7 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
       setStatus('idle');
       setIsUserSpeaking(false);
       setShowVehicle(false);
+      // navigate("/confirmation");
     },
     onError: (error) => {
       console.error('Conversation error:', error);
@@ -56,7 +59,7 @@ export const useVoiceSession = ({ agentId, bookingId }: UseVoiceSessionProps) =>
         description: typeof error === 'string' ? error : "Failed to connect to agent.",
         variant: "destructive",
       });
-    }
+    },
   });
 
   // Actions
