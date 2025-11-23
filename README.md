@@ -204,9 +204,8 @@ VITE_AGENT_ID=          # ElevenLabs agent ID
 
 **Backend (`.env`):**
 ```env
-ELEVENLABS_API_KEY=     # ElevenLabs agent ID
-OPENAI_API_KEY=         # OpenAI API key (optional)
-GOOGLE_AI_API_KEY=      # Google AI API key (optional)
+ELEVENLABS_API_KEY=     # ElevenLabs api key
+ELEVENLABS_AGENT_ID=    # ElevenLabs agent ID
 ```
 
 ## 📱 Available Routes
