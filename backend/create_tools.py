@@ -265,6 +265,37 @@ tools_to_create = [
             "execution_mode": "immediate",
             "response_timeout_secs": 1
         }
+    },
+    # Client Tool Finalize Booking
+    {
+        "tool_config": {    
+            "type": "completeBooking",
+            "name": "end_call",
+            "description": "Only invoked after the complete booking tool has been called. Informs the user that the booking has been finalized successfully. ",
+            "expects_response": False,
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            },
+            "dynamic_variables": {
+                "dynamic_variable_placeholders": {}
+            },
+            "assignments": [],
+            "disable_interruptions": False,
+            "tool_call_sound": None,
+            "tool_call_sound_behavior": "auto",
+            "force_pre_tool_speech": False,
+            "execution_mode": "immediate",
+            "response_timeout_secs": 1
+        }
+    },
+    # System Tool to end the call
+    {
+        "tool_config": {    
+            "type": "system",
+            "name": "end_call",
+            "description": ""
+        }
     }
 ]
 

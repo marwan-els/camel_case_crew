@@ -12,6 +12,10 @@ elevenlabs = ElevenLabs(
 
 prompt = Path(__file__).with_name("sixt_agent_prompt.txt").read_text()
 
+end_call_tool = PromptAgentInputToolsItem_System(
+    name="end_call",
+    description=""  # Optional: Customize when the tool should be triggered
+)
 
 response = elevenlabs.conversational_ai.agents.create(
     name="Sixt Sales Agent",
