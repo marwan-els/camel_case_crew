@@ -31,7 +31,7 @@ The project is split into three main components:
 - **OpenAI & Google Generative AI** integrations
 
 ### iOS App
-- **SwiftUI**]
+- **SwiftUI**
 - **Xcode Project**
 
 ## 📁 Project Structure
@@ -91,11 +91,9 @@ cd backend
 pip install -r requirements.txt
 ```
 
-3. Create a `.env` file with your API keys:
+3. Create a `.env` file at the root directory with your Elevenlabs API key:
 ```env
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
-OPENAI_API_KEY=your_openai_api_key
-GOOGLE_AI_API_KEY=your_google_ai_api_key
 ```
 
 4. Create the AI agent:
@@ -104,6 +102,14 @@ python create_agent.py
 ```
 
 5. Note the `agent_id` from the output and add it to your frontend environment variables.
+```env
+ELEVENLABS_AGENT_ID=your_elevenlabs_agent_id
+```
+
+7. Create the AI tools (AI uses it to call SIXT's API endpoints):
+```bash
+python create_tools.py
+```
 
 ### Frontend Setup
 
@@ -119,7 +125,7 @@ npm install
 bun install
 ```
 
-3. Create a `.env` file:
+3. Add the following enviroment variable to the .env file:
 ```env
 VITE_AGENT_ID=your_agent_id_from_backend
 ```
@@ -131,7 +137,7 @@ npm run dev
 bun dev
 ```
 
-5. Open your browser to `http://localhost:5173`
+5. Open your browser to `http://localhost:8080`
 
 ### iOS App Setup
 
@@ -140,15 +146,17 @@ bun dev
 cd app
 ```
 
-2. Install Ruby dependencies:
+2. Run xcodegen:
 ```bash
-bundle install
+xcodegen generate
 ```
 
 3. Open the Xcode project:
 ```bash
 open SixtDigitalSalesAgent.xcodeproj
 ```
+
+4. Update the `agentId` in `ConversationViewModel`
 
 4. Build and run the app in Xcode or use Fastlane for deployment.
 
@@ -241,9 +249,9 @@ This project is private and proprietary.
 ## 👥 Team
 
 Developed by the Camel Case Crew team.
-- [Marwan Elsayed](https://github.com/marwan-els)
-- [Youssef Eltoukhi](https://github.com/toukhi)
-- [Nayer Kotry](https://github.com/nayer-kotry)
+- [Marwan Elsayed](https://www.linkedin.com/in/marwan-eslayed1/)
+- [Youssef Eltoukhi](https://www.linkedin.com/in/youssefeltoukhi/)
+- [Nayer Kotry](https://www.linkedin.com/in/nayerkotry/)
 
 ## 🔗 Additional Resources
 
