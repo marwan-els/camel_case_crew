@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct AIChoiceView: View {
+    @State private var showAIAgent = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -17,7 +19,6 @@ struct AIChoiceView: View {
                         .foregroundStyle(Color("bodyGray"))
                         .padding(.bottom, 12)
                     
-                    
                     AdaptiveCards(spacing: 14) {
                         OptionCard(
                             icon: "mic.fill",
@@ -28,7 +29,7 @@ struct AIChoiceView: View {
                             buttonBg: Color("sixtOrange"),
                             badge: "preferred Option"
                         ) {
-                            // TODO: navigate to agent flow
+                            showAIAgent = true
                         }
                         NavigationLink(destination: TripInfoView()) {
                             OptionCard(
@@ -49,6 +50,9 @@ struct AIChoiceView: View {
                 .padding(.bottom, 24)
             }
             .background(Color.white)
+            .navigationDestination(isPresented: $showAIAgent) {
+                            AIAgentView()
+                        }
         }
     }
 }

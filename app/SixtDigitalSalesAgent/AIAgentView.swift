@@ -5,14 +5,16 @@ struct AIAgentView: View {
     enum ConnectState {
         case ready
         case connecting
-//        case connected
+        case connected
     }
 
     @State private var state: ConnectState = .ready
+    @State private var bookingId: String?
+    @State private var errorMessage: String?
+    @StateObject private var viewModel = ConversationViewModel()
 
     var body: some View {
         VStack(spacing: 18) {
-
             Spacer().frame(height: 30)
 
             // Logo
@@ -30,7 +32,21 @@ struct AIAgentView: View {
 
             // Big mic button
             Button {
-                toggleState()
+                print("clicked")
+                Task {
+                    if viewModel.isConnected {
+                        await viewModel.endConversation()
+                        state = .ready
+                    } else {
+                        if let bookingId {
+                            state = .connecting
+                            await viewModel.startConversation(bookingId: bookingId)
+                            state = .connected
+                        } else {
+                            state = .ready
+                        }
+                    }
+                }
             } label: {
                 ZStack {
                     Circle()
@@ -55,48 +71,79 @@ struct AIAgentView: View {
                 .font(.system(size: 15))
                 .foregroundStyle(Color("muted"))
 
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.system(size: 13))
+                    .foregroundColor(.red)
+                    .padding(.top, 8)
+            }
+
             Spacer()
         }
         .frame(maxWidth: .infinity)
         .background(Color.white)
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            do {
+                bookingId = try await getMockBookingId()
+                print("Received bookingId:", bookingId ?? "nil")
+            } catch {
+                errorMessage = "Failed to load booking: \(error.localizedDescription)"
+                print("Error fetching bookingId:", error)
+            }
+        }
     }
-    
+
+    // MARK: - UI Helpers
+
     private var buttonColor: Color {
         switch state {
         case .ready: return Color.black.opacity(0.9)
         case .connecting: return Color.black.opacity(0.45)
+        case .connected: return Color.sixtOrange
         }
     }
-    
+
     private var buttonIcon: String {
         switch state {
-        case .ready: return "mic.slash.fill"   // like your screenshot
+        case .ready: return "mic.slash.fill"
         case .connecting: return "mic.fill"
+        case .connected: return "mic.fill"
         }
     }
-    
+
     private var statusTitle: String {
         switch state {
         case .ready: return "Ready to start"
         case .connecting: return "Connecting..."
+        case .connected: return "Listening..."
         }
     }
-    
-    private func toggleState() {
-        switch state {
-        case .ready:
-            state = .connecting
 
-            // Optional: simulate a connection delay and go back to ready
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                state = .ready
-            }
+    // MARK: - Networking
 
-        case .connecting:
-            // If you want tapping again to cancel:
-            state = .ready
+    func getMockBookingId() async throws -> String {
+        guard let url = URL(string: "https://hackatum25.sixt.io/api/booking") else {
+            throw URLError(.badURL)
         }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
+        struct BookingResponse: Decodable {
+            let id: String
+        }
+        print("booking_id: \(data)")
+        
+        let decoded = try JSONDecoder().decode(BookingResponse.self, from: data)
+        return decoded.id
     }
 }
 
